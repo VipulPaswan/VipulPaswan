@@ -1,0 +1,131 @@
+# 🐍 Snake Animation 404 Fix - Complete Setup Guide
+
+## 🚨 **Why 404 Error Occurs**
+The snake animation shows 404 because:
+- The GitHub Action hasn't run yet to generate the snake.svg file
+- The workflow file is missing or incorrect
+- The output branch doesn't exist
+
+## 🛠️ **Complete Fix Steps**
+
+### **Step 1: Create GitHub Action Workflow**
+
+1. In your profile repository (`vipulpaswan/vipulpaswan`), create this folder structure:
+```
+.github/
+└── workflows/
+    └── snake.yml
+```
+
+2. Create the file `.github/workflows/snake.yml` with this content:
+
+```yaml
+name: Generate snake animation
+
+on:
+  schedule: # execute every 12 hours
+    - cron: "0 */12 * * *"
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+    - master
+
+jobs:
+  generate:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: generate snake.svg
+        uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: vipulpaswan
+          outputs: |
+            dist/snake.svg?palette=github-dark
+            dist/snake-dark.svg?palette=github-dark
+            dist/snake-light.svg?palette=github-light
+
+      - name: push snake.svg to the output branch
+        uses: crazy-max/ghaction-github-pages@v3.1.0
+        with:
+          target_branch: output
+          build_dir: dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+### **Step 2: Enable GitHub Actions**
+
+1. Go to your repository **Settings**
+2. Click on **Actions** in the left sidebar
+3. Select **"Allow all actions and reusable workflows"**
+4. Click **Save**
+
+### **Step 3: Run the Action Manually (First Time)**
+
+1. Go to **Actions** tab in your repository
+2. Click on **"Generate snake animation"** workflow
+3. Click **"Run workflow"** button
+4. Select **main/master** branch
+5. Click **"Run workflow"** green button
+
+### **Step 4: Wait for Completion**
+
+- The action will take 2-5 minutes to complete
+- You'll see a green checkmark when successful
+- The `output` branch will be created automatically
+
+### **Step 5: Update README (Alternative Options)**
+
+If snake still shows 404, use one of these alternatives:
+
+**Option A: Different Snake Service**
+```markdown
+<div align="center">
+  <img src="https://github.com/vipulpaswan/vipulpaswan/blob/output/github-contribution-grid-snake.svg" alt="Snake animation" />
+</div>
+```
+
+**Option B: Contribution Graph Instead**
+```markdown
+<div align="center">
+  <img src="https://github-readme-activity-graph.vercel.app/graph?username=vipulpaswan&theme=tokyo-night&hide_border=true&area=true" alt="Contribution Graph" />
+</div>
+```
+
+**Option C: Remove Snake Completely**
+Just delete the snake section if it keeps causing issues.
+
+## ✅ **Quick Fix Checklist**
+
+- [ ] Created `.github/workflows/snake.yml` file
+- [ ] Enabled GitHub Actions in repository settings  
+- [ ] Ran workflow manually from Actions tab
+- [ ] Waited for green checkmark (success)
+- [ ] Checked if `output` branch was created
+- [ ] Verified snake.svg exists in output branch
+
+## 🔧 **Troubleshooting**
+
+**If still 404:**
+1. Check if your repository is public (private repos may have issues)
+2. Verify your username spelling in the workflow file
+3. Make sure GITHUB_TOKEN has proper permissions
+4. Try the alternative options above
+
+**Alternative - Simple Animated GIF:**
+```markdown
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Platane/snk/output/github-contribution-grid-snake.gif" alt="Snake animation" />
+</div>
+```
+
+## ⏰ **Timeline**
+- Initial setup: 5-10 minutes
+- First generation: 2-5 minutes  
+- Auto-updates: Every 12 hours
+
+The snake will show your actual GitHub contribution history as an animated game!
